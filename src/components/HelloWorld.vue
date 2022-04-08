@@ -1,133 +1,151 @@
 <template>
-<div>
-    <div class="text-subtitle-2 mb-2">With markup</div>
+  <v-container>
+    <v-row class="text-center">
+      <v-col cols="12">
+        <v-img
+          :src="require('../assets/logo.svg')"
+          class="my-3"
+          contain
+          height="200"
+        />
+      </v-col>
 
-    <v-expansion-panels>
-      <v-expansion-panel
-        v-for="i in RessourceCreate"
-        :key="i"
+      <v-col class="mb-4">
+        <h1 class="display-2 font-weight-bold mb-3">
+          Welcome to Vuetify
+        </h1>
+
+        <p class="subheading font-weight-regular">
+          For help and collaboration with other Vuetify developers,
+          <br>please join our online
+          <a
+            href="https://community.vuetifyjs.com"
+            target="_blank"
+          >Discord Community</a>
+        </p>
+      </v-col>
+
+      <v-col
+        class="mb-5"
+        cols="12"
       >
-        <v-expansion-panel-title>
-          {{i.address}}
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+        <h2 class="headline font-weight-bold mb-3">
+          What's next?
+        </h2>
 
-    <div class="text-subtitle-2 mt-4 mb-2">With props</div>
+        <v-row justify="center">
+          <a
+            v-for="(next, i) in whatsNext"
+            :key="i"
+            :href="next.href"
+            class="subheading mx-3"
+            target="_blank"
+          >
+            {{ next.text }}
+          </a>
+        </v-row>
+      </v-col>
 
-    <v-expansion-panels>
-      <v-expansion-panel
-        v-for="i in 3"
-        :key="i"
-        title="Item"
-        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-      ></v-expansion-panel>
-    </v-expansion-panels>
-  </div>
-  
-  <input type="file" id="selectFiles" value="" />
-  <button id="import" v-on:click="importJson">Import The File!</button>
-  <pre id="RessourceCreate"></pre> <br />
-  <pre id="RessourceDelete"></pre><br />
-  <!-- <pre id="RessourceOther"></pre><br /> -->
+      <v-col
+        class="mb-5"
+        cols="12"
+      >
+        <h2 class="headline font-weight-bold mb-3">
+          Important Links
+        </h2>
+
+        <v-row justify="center">
+          <a
+            v-for="(link, i) in importantLinks"
+            :key="i"
+            :href="link.href"
+            class="subheading mx-3"
+            target="_blank"
+          >
+            {{ link.text }}
+          </a>
+        </v-row>
+      </v-col>
+
+      <v-col
+        class="mb-5"
+        cols="12"
+      >
+        <h2 class="headline font-weight-bold mb-3">
+          Ecosystem
+        </h2>
+
+        <v-row justify="center">
+          <a
+            v-for="(eco, i) in ecosystem"
+            :key="i"
+            :href="eco.href"
+            class="subheading mx-3"
+            target="_blank"
+          >
+            {{ eco.text }}
+          </a>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
-
 <script>
+  export default {
+    name: 'HelloWorld',
 
-export default {
-  name: 'HelloWorld',
-  methods: {
-    importJson: function () {
-      const files = document.getElementById('selectFiles').files;
-      const fr = new FileReader();
-      // const RessourceCreate = [];
-      const RessourceDelete = [];
-      const RessourceOther = [];
-        fr.onload = e => {
-          const resource_changes = JSON.parse(e.target.result).resource_changes;
-
-          resource_changes.forEach(element => {
-            if (element.change.actions[0] != "no-op") {
-              element.change.actions.forEach(action => {
-                if (action == "create") {
-                  this.RessourceCreate.push(element)
-                }
-                if (action == "delete") {
-                  RessourceDelete.push(element)
-                }
-
-                
-                  RessourceOther.push(element)
-                
-              });
-              // result.push(element)
-            }
-                      
-          });
-
-          const RessourceCreateFmt = JSON.stringify(this.RessourceCreate, null, 2);
-          const RessourceDeleteFmt = JSON.stringify(RessourceDelete, null, 2);
-          // const RessourceOtherFmt = JSON.stringify(RessourceOther, null, 2);
-          document.getElementById('RessourceCreate').innerHTML = RessourceCreateFmt;
-          document.getElementById('RessourceDelete').innerHTML = RessourceDeleteFmt;
-          // document.getElementById('RessourceOther').innerHTML = RessourceOtherFmt;
-        }
-        fr.readAsText(files.item(0));
-    }
-  },
-
-  data: () => ({
-    RessourceCreate : [],
-    ecosystem: [
-      {
-        text: 'vuetify-loader',
-        href: 'https://github.com/vuetifyjs/vuetify-loader',
-      },
-      {
-        text: 'github',
-        href: 'https://github.com/vuetifyjs/vuetify',
-      },
-      {
-        text: 'awesome-vuetify',
-        href: 'https://github.com/vuetifyjs/awesome-vuetify',
-      },
-    ],
-    importantLinks: [
-      {
-        text: 'Chat',
-        href: 'https://community.vuetifyjs.com',
-      },
-      {
-        text: 'Made with Vuetify',
-        href: 'https://madewithvuejs.com/vuetify',
-      },
-      {
-        text: 'Twitter',
-        href: 'https://twitter.com/vuetifyjs',
-      },
-      {
-        text: 'Articles',
-        href: 'https://medium.com/vuetify',
-      },
-    ],
-    whatsNext: [
-      {
-        text: 'Explore components',
-        href: 'https://vuetifyjs.com',
-      },
-      {
-        text: 'Roadmap',
-        href: 'https://vuetifyjs.com/introduction/roadmap/',
-      },
-      {
-        text: 'Frequently Asked Questions',
-        href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-      },
-    ],
-  }),
-}
+    data: () => ({
+      ecosystem: [
+        {
+          text: 'vuetify-loader',
+          href: 'https://github.com/vuetifyjs/vuetify-loader',
+        },
+        {
+          text: 'github',
+          href: 'https://github.com/vuetifyjs/vuetify',
+        },
+        {
+          text: 'awesome-vuetify',
+          href: 'https://github.com/vuetifyjs/awesome-vuetify',
+        },
+      ],
+      importantLinks: [
+        {
+          text: 'Documentation',
+          href: 'https://vuetifyjs.com',
+        },
+        {
+          text: 'Chat',
+          href: 'https://community.vuetifyjs.com',
+        },
+        {
+          text: 'Made with Vuetify',
+          href: 'https://madewithvuejs.com/vuetify',
+        },
+        {
+          text: 'Twitter',
+          href: 'https://twitter.com/vuetifyjs',
+        },
+        {
+          text: 'Articles',
+          href: 'https://medium.com/vuetify',
+        },
+      ],
+      whatsNext: [
+        {
+          text: 'Explore components',
+          href: 'https://vuetifyjs.com/components/api-explorer',
+        },
+        {
+          text: 'Select a layout',
+          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
+        },
+        {
+          text: 'Frequently Asked Questions',
+          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
+        },
+      ],
+    }),
+  }
 </script>
