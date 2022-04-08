@@ -4,11 +4,11 @@
 
     <v-expansion-panels>
       <v-expansion-panel
-        v-for="i in RessourceCreate"
+        v-for="i in 3"
         :key="i"
       >
         <v-expansion-panel-title>
-          {{i.address}}
+          Item
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -35,16 +35,17 @@
   <!-- <pre id="RessourceOther"></pre><br /> -->
 </template>
 
-
 <script>
-
 export default {
   name: 'HelloWorld',
+  props: {
+    msg: String
+  },
   methods: {
     importJson: function () {
       const files = document.getElementById('selectFiles').files;
       const fr = new FileReader();
-      // const RessourceCreate = [];
+      const RessourceCreate = [];
       const RessourceDelete = [];
       const RessourceOther = [];
         fr.onload = e => {
@@ -54,7 +55,7 @@ export default {
             if (element.change.actions[0] != "no-op") {
               element.change.actions.forEach(action => {
                 if (action == "create") {
-                  this.RessourceCreate.push(element)
+                  RessourceCreate.push(element)
                 }
                 if (action == "delete") {
                   RessourceDelete.push(element)
@@ -69,7 +70,7 @@ export default {
                       
           });
 
-          const RessourceCreateFmt = JSON.stringify(this.RessourceCreate, null, 2);
+          const RessourceCreateFmt = JSON.stringify(RessourceCreate, null, 2);
           const RessourceDeleteFmt = JSON.stringify(RessourceDelete, null, 2);
           // const RessourceOtherFmt = JSON.stringify(RessourceOther, null, 2);
           document.getElementById('RessourceCreate').innerHTML = RessourceCreateFmt;
@@ -78,56 +79,47 @@ export default {
         }
         fr.readAsText(files.item(0));
     }
-  },
-
-  data: () => ({
-    RessourceCreate : [],
-    ecosystem: [
-      {
-        text: 'vuetify-loader',
-        href: 'https://github.com/vuetifyjs/vuetify-loader',
-      },
-      {
-        text: 'github',
-        href: 'https://github.com/vuetifyjs/vuetify',
-      },
-      {
-        text: 'awesome-vuetify',
-        href: 'https://github.com/vuetifyjs/awesome-vuetify',
-      },
-    ],
-    importantLinks: [
-      {
-        text: 'Chat',
-        href: 'https://community.vuetifyjs.com',
-      },
-      {
-        text: 'Made with Vuetify',
-        href: 'https://madewithvuejs.com/vuetify',
-      },
-      {
-        text: 'Twitter',
-        href: 'https://twitter.com/vuetifyjs',
-      },
-      {
-        text: 'Articles',
-        href: 'https://medium.com/vuetify',
-      },
-    ],
-    whatsNext: [
-      {
-        text: 'Explore components',
-        href: 'https://vuetifyjs.com',
-      },
-      {
-        text: 'Roadmap',
-        href: 'https://vuetifyjs.com/introduction/roadmap/',
-      },
-      {
-        text: 'Frequently Asked Questions',
-        href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-      },
-    ],
-  }),
+  }
 }
+
+// var example1 = new Vue({
+//   el: '#example-1',
+//   data: {
+//     counter: 0
+//   }
+// })
+
+// document.getElementById('import').onclick = () => {
+//   const files = document.getElementById('selectFiles').files;
+//   if (files.length <= 0) {
+//     return false;
+//   }
+
+//   const fr = new FileReader();
+
+//   fr.onload = e => {
+//     const result = JSON.parse(e.target.result);
+//     const formatted = JSON.stringify(result, null, 2);
+//     document.getElementById('result').innerHTML = formatted;
+//   }
+//   fr.readAsText(files.item(0));
+// };
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>
