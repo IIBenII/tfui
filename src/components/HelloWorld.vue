@@ -1,151 +1,191 @@
 <template>
-  <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
+  <div>
+    <v-card color="grey lighten-4" flat tile>
+      <v-toolbar dense>
+        <v-toolbar-title>tfUI</v-toolbar-title>
 
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Vuetify
-        </h1>
+        <v-spacer></v-spacer>
+        <v-file-input
+          truncate-length="15"
+          label="Choose tf plan"
+          id="selectFiles"
+        ></v-file-input>
+        <v-btn id="import" v-on:click="importJson">Import The File!</v-btn>
 
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
-        </p>
-      </v-col>
+      </v-toolbar>
+    </v-card>
 
-      <v-col
-        class="mb-5"
-        cols="12"
+    <v-card v-if="RessourceCreate.length > 0">
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        dense
+        :headers="headers"
+        :items="RessourceCreate"
+        item-key="address"
+        class="ressource-create"
+        :expanded.sync="expandedCreate"
+        show-expand
       >
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length">
+            <pre>{{ JSON.stringify(item, null, 2) }}</pre>
+          </td>
+        </template>
+      </v-data-table>
+    </v-card>
 
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
+    <v-card v-if="RessourceUpdate.length > 0">
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        dense
+        :headers="headers"
+        :items="RessourceUpdate"
+        item-key="address"
+        class="ressource-update"
+        :expanded.sync="expandedUpdate"
+        show-expand
       >
-        <h2 class="headline font-weight-bold mb-3">
-          Important Links
-        </h2>
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length">
+            <pre>{{ JSON.stringify(item, null, 2) }}</pre>
+          </td>
+        </template>
+      </v-data-table>
+    </v-card>
 
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
+    <v-card v-if="RessourceDelete.length > 0">
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        dense
+        :headers="headers"
+        :items="RessourceDelete"
+        item-key="address"
+        class="ressource-delete"
+        :expanded.sync="expandedDelete"
+        show-expand
       >
-        <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
-        </h2>
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length">
+            <pre>{{ JSON.stringify(item, null, 2) }}</pre>
+          </td>
+        </template>
+      </v-data-table>
+    </v-card>
 
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+    <!-- <pre id="RessourceCreate"></pre>
+    <br />
+    <pre id="RessourceDelete"></pre>
+    <br />
+    <pre id="RessourceOther"></pre>
+    <br /> -->
+  </div>
 </template>
 
 <script>
-  export default {
-    name: 'HelloWorld',
+export default {
+  name: "HelloWorld",
 
-    data: () => ({
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
-    }),
-  }
+  methods: {
+    importJson: function () {
+      const files = document.getElementById("selectFiles").files;
+      const fr = new FileReader();
+      // const RessourceCreate = [];
+      // const RessourceDelete = [];
+      // const RessourceOther = [];
+      fr.onload = (e) => {
+        const resource_changes = JSON.parse(e.target.result).resource_changes;
+
+        resource_changes.forEach((element) => {
+          if (element.change.actions[0] != "no-op") {
+            if (
+              element.change.actions.length == 1 &&
+              element.change.actions[0] == "create"
+            ) {
+              this.RessourceCreate.push(element);
+            } else if (
+              element.change.actions.length == 1 &&
+              element.change.actions[0] == "delete"
+            ) {
+              this.RessourceDelete.push(element);
+            } else if (
+              element.change.actions.length == 2 &&
+              element.change.actions.sort().join(",") ===
+                ["create", "delete"].sort().join(",")
+            ) {
+              this.RessourceUpdate.push(element);
+            }
+            // element.change.actions.forEach((action) => {
+            //   if (action == "create") {
+            //     this.RessourceCreate.push(element);
+            //   }
+            //   if (action == "delete") {
+            //     RessourceDelete.push(element);
+            //   }
+
+            //   RessourceOther.push(element);
+            // });
+            // result.push(element)
+          }
+        });
+
+        // const RessourceCreateFmt = JSON.stringify(
+        //   this.RessourceCreate,
+        //   null,
+        //   2
+        // );
+        // const RessourceDeleteFmt = JSON.stringify(RessourceDelete, null, 2);
+        // const RessourceOtherFmt = JSON.stringify(RessourceOther, null, 2);
+        // document.getElementById("RessourceCreate").innerHTML =
+        //   RessourceCreateFmt;
+        // document.getElementById("RessourceDelete").innerHTML =
+        //   RessourceDeleteFmt;
+        // document.getElementById('RessourceOther').innerHTML = RessourceOtherFmt;
+      };
+      fr.readAsText(files.item(0));
+    },
+  },
+
+  data: () => ({
+    RessourceCreate: [],
+    RessourceDelete: [],
+    RessourceUpdate: [],
+    expandedCreate: [],
+    expandedUpdate: [],
+    expandedDelete: [],
+    headers: [
+      {
+        text: "address",
+        align: "start",
+        sortable: false,
+        value: "address",
+      },
+      { text: "type", value: "type" },
+      { text: "name", value: "name" },
+    ],
+  }),
+};
 </script>
