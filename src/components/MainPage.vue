@@ -122,6 +122,9 @@ export default {
       this.RessourceCreate = [];
       this.RessourceDelete = [];
       this.RessourceUpdate = [];
+      this.expandedCreate = [];
+      this.expandedUpdate = [];
+      this.expandedDelete = [];
       const files = document.getElementById("selectFiles").files;
       const fr = new FileReader();
       fr.onload = (e) => {
@@ -139,7 +142,13 @@ export default {
               element.change.actions[0] == "delete"
             ) {
               this.RessourceDelete.push(element);
-            } else if (
+            } 
+            else if (
+              element.change.actions.length == 1 &&
+              element.change.actions[0] == "update"
+            ) {
+              this.RessourceUpdate.push(element);
+            }else if (
               element.change.actions.length == 2 &&
               element.change.actions.sort().join(",") ===
                 ["create", "delete"].sort().join(",")
