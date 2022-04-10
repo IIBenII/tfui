@@ -1,30 +1,41 @@
 <template>
   <div>
-    <v-card color="grey lighten-4" flat tile>
-      <v-toolbar dense>
+    <v-card  >
+      <v-toolbar color="blue">
+        <v-row class="mt-1">
         <v-toolbar-title>tfUI</v-toolbar-title>
 
         <v-spacer></v-spacer>
         <v-file-input
-          truncate-length="15"
           label="Choose tf plan"
           id="selectFiles"
+          dense
+          @change="importJson"
+          margin="60px"
+          single-line:True
+          truncate-length="50"
+    accept=".json,application/json,application/JSON"
         ></v-file-input>
-        <v-btn id="import" v-on:click="importJson">Import The File!</v-btn>
-
+        </v-row>
       </v-toolbar>
     </v-card>
 
-    <v-card v-if="RessourceCreate.length > 0">
-      <v-card-title>
-        <v-text-field
+      <v-row no-gutters>
+       <v-col>
+        
+      <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
           single-line
           hide-details
         ></v-text-field>
-      </v-card-title>
+      </v-col>
+      </v-row>
+
+
+     <v-row no-gutters v-if="RessourceCreate.length > 0">
+       <v-col>
       <v-data-table
         dense
         :headers="headers"
@@ -33,25 +44,20 @@
         class="ressource-create"
         :expanded.sync="expandedCreate"
         show-expand
+        :search="search"
       >
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length">
-            <pre>{{ JSON.stringify(item, null, 2) }}</pre>
+            <pre>{{ JSON.stringify(item["change"]["after"], null, 2) }}</pre>
           </td>
         </template>
       </v-data-table>
-    </v-card>
+       </v-col>
+      </v-row>
 
-    <v-card v-if="RessourceUpdate.length > 0">
-      <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
+
+      <v-row no-gutters v-if="RessourceUpdate.length > 0">
+       <v-col>
       <v-data-table
         dense
         :headers="headers"
@@ -60,25 +66,19 @@
         class="ressource-update"
         :expanded.sync="expandedUpdate"
         show-expand
+        :search="search"
       >
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length">
-            <pre>{{ JSON.stringify(item, null, 2) }}</pre>
+            <span v-html="processDif(item)"></span>
           </td>
         </template>
       </v-data-table>
-    </v-card>
+       </v-col>
+    </v-row>
 
-    <v-card v-if="RessourceDelete.length > 0">
-      <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
+      <v-row no-gutters v-if="RessourceDelete.length > 0">
+       <v-col>
       <v-data-table
         dense
         :headers="headers"
@@ -87,21 +87,16 @@
         class="ressource-delete"
         :expanded.sync="expandedDelete"
         show-expand
+        :search="search"
       >
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length">
-            <pre>{{ JSON.stringify(item, null, 2) }}</pre>
+            <pre>{{ JSON.stringify(item["change"]["before"], null, 2) }}</pre>
           </td>
         </template>
       </v-data-table>
-    </v-card>
-
-    <!-- <pre id="RessourceCreate"></pre>
-    <br />
-    <pre id="RessourceDelete"></pre>
-    <br />
-    <pre id="RessourceOther"></pre>
-    <br /> -->
+       </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -111,11 +106,11 @@ export default {
 
   methods: {
     importJson: function () {
+      this.RessourceCreate= []
+      this.RessourceDelete= []
+      this.RessourceUpdate= []
       const files = document.getElementById("selectFiles").files;
       const fr = new FileReader();
-      // const RessourceCreate = [];
-      // const RessourceDelete = [];
-      // const RessourceOther = [];
       fr.onload = (e) => {
         const resource_changes = JSON.parse(e.target.result).resource_changes;
 
@@ -138,38 +133,32 @@ export default {
             ) {
               this.RessourceUpdate.push(element);
             }
-            // element.change.actions.forEach((action) => {
-            //   if (action == "create") {
-            //     this.RessourceCreate.push(element);
-            //   }
-            //   if (action == "delete") {
-            //     RessourceDelete.push(element);
-            //   }
-
-            //   RessourceOther.push(element);
-            // });
-            // result.push(element)
           }
         });
-
-        // const RessourceCreateFmt = JSON.stringify(
-        //   this.RessourceCreate,
-        //   null,
-        //   2
-        // );
-        // const RessourceDeleteFmt = JSON.stringify(RessourceDelete, null, 2);
-        // const RessourceOtherFmt = JSON.stringify(RessourceOther, null, 2);
-        // document.getElementById("RessourceCreate").innerHTML =
-        //   RessourceCreateFmt;
-        // document.getElementById("RessourceDelete").innerHTML =
-        //   RessourceDeleteFmt;
-        // document.getElementById('RessourceOther').innerHTML = RessourceOtherFmt;
       };
       fr.readAsText(files.item(0));
     },
+    processDif: function(entity) {
+      const afterValues = entity["change"]["after"];
+      const beforeValues = entity["change"]["before"];
+      var result = {}
+      for (const [key, value] of Object.entries(afterValues)) {
+        if (key == "condition"){
+          continue
+        }
+        else if ( value != beforeValues[key]){
+        result[key] = `<span style= 'color:orange'>` + beforeValues[key] + '->' + value + '</span>'
+        }
+        else {
+          result[key] =  value
+        }
+      }
+      return "<pre>" + JSON.stringify(result, null, 2) + "</pre>"
+    }
   },
 
   data: () => ({
+    search : '',
     RessourceCreate: [],
     RessourceDelete: [],
     RessourceUpdate: [],
