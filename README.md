@@ -15,6 +15,13 @@ Then upload it to tfUI.
 
 ## Docker
 
+Pull from docker hub:
+
+```
+docker pull iibenii/tfui:latest
+docker run -rm -p 8080:80 iibenii/tfui:latest
+```
+
 You can run tfUI with docker:
 
 ```bash
@@ -23,6 +30,11 @@ docker run -rm -p 8080:80 tfui
 ```
 
 Then go to http://localhost:8080.
+
+
+## Release
+
+You can check releases here: https://github.com/IIBenII/tfui/releases. 
 
 
 ## Development
