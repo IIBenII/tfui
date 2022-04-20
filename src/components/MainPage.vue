@@ -114,23 +114,19 @@
 </template>
 
 <script>
+//import usersData from process.env.VUE_APP_NOT_SECRET_CODE;
 export default {
   name: "MainPage",
-
+  
+  async created() {
+    if (process.env.VUE_APP_TF_PLAN !== undefined) {
+      this.json = await import(process.env.VUE_APP_TF_PLAN);
+      this.parseJson(this.json.resource_changes);
+    }
+  },
   methods: {
-    importJson: function () {
-      this.RessourceCreate = [];
-      this.RessourceDelete = [];
-      this.RessourceUpdate = [];
-      this.expandedCreate = [];
-      this.expandedUpdate = [];
-      this.expandedDelete = [];
-      const files = document.getElementById("selectFiles").files;
-      const fr = new FileReader();
-      fr.onload = (e) => {
-        const resource_changes = JSON.parse(e.target.result).resource_changes;
-
-        resource_changes.forEach((element) => {
+    parseJson: function(resource_changes){
+      resource_changes.forEach((element) => {
           if (element.change.actions[0] != "no-op") {
             if (
               element.change.actions.length == 1 &&
@@ -157,8 +153,21 @@ export default {
             }
           }
         });
+    },
+    importJson: function (event) {
+      this.RessourceCreate = [];
+      this.RessourceDelete = [];
+      this.RessourceUpdate = [];
+      this.expandedCreate = [];
+      this.expandedUpdate = [];
+      this.expandedDelete = [];
+      const fr = new FileReader();
+      fr.readAsText(event);
+      fr.onload = (e) => {
+        const resource_changes = JSON.parse(e.target.result).resource_changes;
+        this.parseJson(resource_changes)
+        
       };
-      fr.readAsText(files.item(0));
     },
     processDif: function (entity) {
       const afterValues = entity["change"]["after"];
@@ -183,6 +192,7 @@ export default {
   },
 
   data: () => ({
+    json: null,
     search: "",
     RessourceCreate: [],
     RessourceDelete: [],
