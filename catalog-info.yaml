@@ -6,6 +6,9 @@ metadata:
   tags:
     - python
     - gcp
+  metadata:
+    annotations:
+      github.com/project-slug: IIBenII/tfui
 spec:
   type: website
   lifecycle: production
