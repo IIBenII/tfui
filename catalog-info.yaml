@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tfui
+  description: Demo tfui
+  tags:
+    - python
+    - gcp
+spec:
+  type: website
+  lifecycle: production
+  owner: IIBenII
