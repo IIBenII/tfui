@@ -9,6 +9,8 @@ metadata:
   metadata:
     annotations:
       github.com/project-slug: IIBenII/tfui
+      'backstage.io/kubernetes-id': dice-roller
+      'backstage.io/kubernetes-namespace': dice-space
 spec:
   type: website
   lifecycle: production
