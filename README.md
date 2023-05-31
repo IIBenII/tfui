@@ -8,10 +8,10 @@ Generate your terraform plan as json with these commands:
 
 ```bash
 terraform plan -out=./plan/out.txt
-terraform show -json ./plan/out.txt
+terraform show -json ./plan/out.txt > plan.json
 ```
 
-Then upload it to tfUI.
+Then upload `plan.json` to tfUI.
 
 ## Docker
 
