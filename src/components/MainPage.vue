@@ -6,28 +6,34 @@
           <v-toolbar-title>tfUI</v-toolbar-title>
 
           <v-spacer></v-spacer>
-          <v-file-input
-            label="Choose tf plan"
-            id="selectFiles"
-            dense
-            @change="importJson"
-            margin="60px"
-            single-line:True
-            truncate-length="50"
-            accept=".json,application/json,application/JSON"
-          ></v-file-input>
+          <v-file-input label="Choose tf plan" id="selectFiles" dense @change="importJson" margin="60px" single-line:True
+            truncate-length="50" accept=".json,application/json,application/JSON"></v-file-input>
           <v-spacer></v-spacer>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            dense
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" dense single-line
+            hide-details></v-text-field>
         </v-row>
       </v-toolbar>
     </v-card>
+
+    <v-row v-if="RessourceSummarize.length > 0">
+      <v-col>
+        <v-card>
+          <v-card-title>
+            <span style="color: blue">Summarize</span>
+          </v-card-title>
+          <v-data-table dense :headers="headersSummarize" :items="RessourceSummarize" class="ressource-summarize"
+            :search="search" :items-per-page=-1 :disable-pagination="true" :sort-by="['operation']"
+            >
+            <template v-slot:[`item.operation`]="{ item }">
+              <v-chip :color="getColor(item.operation)">
+                {{ item.operation }}
+              </v-chip>
+            </template>
+          </v-data-table>
+
+        </v-card>
+      </v-col>
+    </v-row>
 
     <v-row v-if="RessourceCreate.length > 0">
       <v-col>
@@ -122,6 +128,8 @@ export default {
       this.RessourceCreate = [];
       this.RessourceDelete = [];
       this.RessourceUpdate = [];
+      this.RessourceSummarize = [];
+      this.RessourceSummarizeDict = {};
       this.expandedCreate = [];
       this.expandedUpdate = [];
       this.expandedDelete = [];
@@ -137,26 +145,50 @@ export default {
               element.change.actions[0] == "create"
             ) {
               this.RessourceCreate.push(element);
+              if (!(`${element.type}---created` in this.RessourceSummarizeDict)) {
+                this.RessourceSummarizeDict[`${element.type}---created`] = []
+              }
+              this.RessourceSummarizeDict[`${element.type}---created`].push(element);
             } else if (
               element.change.actions.length == 1 &&
               element.change.actions[0] == "delete"
             ) {
               this.RessourceDelete.push(element);
-            } 
+              if (!(`${element.type}---deleted` in this.RessourceSummarizeDict)) {
+                this.RessourceSummarizeDict[`${element.type}---deleted`] = []
+              }
+              this.RessourceSummarizeDict[`${element.type}---deleted`].push(element);
+            }
             else if (
               element.change.actions.length == 1 &&
               element.change.actions[0] == "update"
             ) {
               this.RessourceUpdate.push(element);
-            }else if (
+              if (!(`${element.type}---updated` in this.RessourceSummarizeDict)) {
+                this.RessourceSummarizeDict[`${element.type}---updated`] = []
+              }
+              this.RessourceSummarizeDict[`${element.type}---updated`].push(element);
+            } else if (
               element.change.actions.length == 2 &&
               element.change.actions.sort().join(",") ===
-                ["create", "delete"].sort().join(",")
+              ["create", "delete"].sort().join(",")
             ) {
               this.RessourceUpdate.push(element);
+              if (!(`${element.type}---updated` in this.RessourceSummarizeDict)) {
+                this.RessourceSummarizeDict[`${element.type}---updated`] = []
+              }
+              this.RessourceSummarizeDict[`${element.type}---updated`].push(element);
             }
           }
         });
+        console.log(this.RessourceSummarizeDict);
+        for (const element in this.RessourceSummarizeDict) {
+          const type = element.split("---")[0]
+          const operation = element.split("---")[1]
+          this.RessourceSummarize.push({ "operation": operation, "type": type, "number": this.RessourceSummarizeDict[element].length })
+        }
+        console.log(this.RessourceSummarize);
+
       };
       fr.readAsText(files.item(0));
     },
@@ -180,6 +212,12 @@ export default {
       }
       return "<pre>" + JSON.stringify(result, null, 2) + "</pre>";
     },
+
+    getColor (operation) {
+        if (operation == "deleted") return 'red'
+        else if (operation == "updated") return 'orange'
+        else return 'green'
+      },
   },
 
   data: () => ({
@@ -187,6 +225,8 @@ export default {
     RessourceCreate: [],
     RessourceDelete: [],
     RessourceUpdate: [],
+    RessourceSummarize: [],
+    RessourceSummarizeDict: {},
     expandedCreate: [],
     expandedUpdate: [],
     expandedDelete: [],
@@ -200,6 +240,15 @@ export default {
       { text: "type", value: "type" },
       { text: "name", value: "name" },
     ],
+    headersSummarize: [
+      {
+        text: "operation",
+        value: "operation",
+        key: "operation"
+      },
+      { text: "type", value: "type" },
+      { text: "number", value: "number" },
+    ]
   }),
 };
 </script>
