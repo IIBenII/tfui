@@ -15,13 +15,13 @@
       </v-toolbar>
     </v-card>
 
-    <v-row v-if="RessourceSumarize.length > 0">
+    <v-row v-if="RessourceSummarize.length > 0">
       <v-col>
         <v-card>
           <v-card-title>
-            <span style="color: blue">Sumarize</span>
+            <span style="color: blue">Summarize</span>
           </v-card-title>
-          <v-data-table dense :headers="headersSumarize" :items="RessourceSumarize" class="ressource-sumarize"
+          <v-data-table dense :headers="headersSummarize" :items="RessourceSummarize" class="ressource-summarize"
             :search="search" :items-per-page=-1 :disable-pagination="true" :sort-by="['operation']"
             >
             <template v-slot:[`item.operation`]="{ item }">
@@ -128,8 +128,8 @@ export default {
       this.RessourceCreate = [];
       this.RessourceDelete = [];
       this.RessourceUpdate = [];
-      this.RessourceSumarize = [];
-      this.RessourceSumarizeDict = {};
+      this.RessourceSummarize = [];
+      this.RessourceSummarizeDict = {};
       this.expandedCreate = [];
       this.expandedUpdate = [];
       this.expandedDelete = [];
@@ -145,49 +145,49 @@ export default {
               element.change.actions[0] == "create"
             ) {
               this.RessourceCreate.push(element);
-              if (!(`${element.type}---created` in this.RessourceSumarizeDict)) {
-                this.RessourceSumarizeDict[`${element.type}---created`] = []
+              if (!(`${element.type}---created` in this.RessourceSummarizeDict)) {
+                this.RessourceSummarizeDict[`${element.type}---created`] = []
               }
-              this.RessourceSumarizeDict[`${element.type}---created`].push(element);
+              this.RessourceSummarizeDict[`${element.type}---created`].push(element);
             } else if (
               element.change.actions.length == 1 &&
               element.change.actions[0] == "delete"
             ) {
               this.RessourceDelete.push(element);
-              if (!(`${element.type}---deleted` in this.RessourceSumarizeDict)) {
-                this.RessourceSumarizeDict[`${element.type}---deleted`] = []
+              if (!(`${element.type}---deleted` in this.RessourceSummarizeDict)) {
+                this.RessourceSummarizeDict[`${element.type}---deleted`] = []
               }
-              this.RessourceSumarizeDict[`${element.type}---deleted`].push(element);
+              this.RessourceSummarizeDict[`${element.type}---deleted`].push(element);
             }
             else if (
               element.change.actions.length == 1 &&
               element.change.actions[0] == "update"
             ) {
               this.RessourceUpdate.push(element);
-              if (!(`${element.type}---updated` in this.RessourceSumarizeDict)) {
-                this.RessourceSumarizeDict[`${element.type}---updated`] = []
+              if (!(`${element.type}---updated` in this.RessourceSummarizeDict)) {
+                this.RessourceSummarizeDict[`${element.type}---updated`] = []
               }
-              this.RessourceSumarizeDict[`${element.type}---updated`].push(element);
+              this.RessourceSummarizeDict[`${element.type}---updated`].push(element);
             } else if (
               element.change.actions.length == 2 &&
               element.change.actions.sort().join(",") ===
               ["create", "delete"].sort().join(",")
             ) {
               this.RessourceUpdate.push(element);
-              if (!(`${element.type}---updated` in this.RessourceSumarizeDict)) {
-                this.RessourceSumarizeDict[`${element.type}---updated`] = []
+              if (!(`${element.type}---updated` in this.RessourceSummarizeDict)) {
+                this.RessourceSummarizeDict[`${element.type}---updated`] = []
               }
-              this.RessourceSumarizeDict[`${element.type}---updated`].push(element);
+              this.RessourceSummarizeDict[`${element.type}---updated`].push(element);
             }
           }
         });
-        console.log(this.RessourceSumarizeDict);
-        for (const element in this.RessourceSumarizeDict) {
+        console.log(this.RessourceSummarizeDict);
+        for (const element in this.RessourceSummarizeDict) {
           const type = element.split("---")[0]
           const operation = element.split("---")[1]
-          this.RessourceSumarize.push({ "operation": operation, "type": type, "number": this.RessourceSumarizeDict[element].length })
+          this.RessourceSummarize.push({ "operation": operation, "type": type, "number": this.RessourceSummarizeDict[element].length })
         }
-        console.log(this.RessourceSumarize);
+        console.log(this.RessourceSummarize);
 
       };
       fr.readAsText(files.item(0));
@@ -225,8 +225,8 @@ export default {
     RessourceCreate: [],
     RessourceDelete: [],
     RessourceUpdate: [],
-    RessourceSumarize: [],
-    RessourceSumarizeDict: {},
+    RessourceSummarize: [],
+    RessourceSummarizeDict: {},
     expandedCreate: [],
     expandedUpdate: [],
     expandedDelete: [],
@@ -240,7 +240,7 @@ export default {
       { text: "type", value: "type" },
       { text: "name", value: "name" },
     ],
-    headersSumarize: [
+    headersSummarize: [
       {
         text: "operation",
         value: "operation",
